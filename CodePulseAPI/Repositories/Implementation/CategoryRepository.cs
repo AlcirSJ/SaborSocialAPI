@@ -19,7 +19,7 @@ namespace CodePulseAPI.Repositories.Implementation
             await dbContext.SaveChangesAsync();
 
             return category;
-        }
+        }       
 
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
@@ -34,7 +34,7 @@ namespace CodePulseAPI.Repositories.Implementation
         {
             var existingCategory = await dbContext.Categories.FirstOrDefaultAsync(x => x.Id.Equals(category.Id));
 
-            if(existingCategory != null)
+            if (existingCategory != null)
             {
                 dbContext.Entry(existingCategory).CurrentValues.SetValues(category);
                 await dbContext.SaveChangesAsync();
@@ -42,6 +42,20 @@ namespace CodePulseAPI.Repositories.Implementation
             }
 
             return null;
+        }
+
+        public async Task<Category?> DeleteAsync(Guid id)
+        {
+            var existingCategory = await dbContext.Categories.FirstOrDefaultAsync(x => x.Id.Equals(id));
+
+            if (existingCategory is null)
+            {
+                return null;
+            }
+
+            dbContext.Categories.Remove(existingCategory);
+            await dbContext.SaveChangesAsync();
+            return existingCategory;
         }
     }
 }

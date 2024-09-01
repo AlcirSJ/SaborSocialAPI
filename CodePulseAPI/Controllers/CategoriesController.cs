@@ -20,14 +20,14 @@ namespace CodePulseAPI.Controllers
         }
 
 
-        
+
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CreateCategoryRequestDto request)
         {
             // Map DTO para domain model
-            var category = new Category 
-            { 
-                Name = request .Name,
+            var category = new Category
+            {
+                Name = request.Name,
                 UrlHandle = request.UrlHandle
             };
 
@@ -54,7 +54,7 @@ namespace CodePulseAPI.Controllers
             //Map Domain model
 
             var response = new List<CategoryDto>();
-            foreach(var category in categories)
+            foreach (var category in categories)
             {
                 response.Add(new CategoryDto
                 {
@@ -70,7 +70,7 @@ namespace CodePulseAPI.Controllers
         // Get / https://localhost:7292/api/categories/{id}
         [HttpGet]
         [Route("{id:Guid}")]
-        public async Task<IActionResult> GetCategoryById( [FromRoute] Guid id)
+        public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
         {
             var existingCategory = await categoryRepository.GetById(id);
 
@@ -104,11 +104,34 @@ namespace CodePulseAPI.Controllers
 
             category = await categoryRepository.UpdateAsync(category);
 
-            if(category == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
+            var response = new CategoryDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+                UrlHandle = category.UrlHandle
+            };
+
+            return Ok(response);
+        }
+
+        // Delete / https://localhost:7292/api/categories/{id}
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
+        {
+           var category =  await categoryRepository.DeleteAsync(id);
+
+            if (category is null)
+            {
+                return NotFound();
+            }
+
+            // Convert Domain model to DTO
             var response = new CategoryDto
             {
                 Id = category.Id,
