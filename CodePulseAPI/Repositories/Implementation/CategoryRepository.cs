@@ -3,59 +3,58 @@ using CodePulseAPI.Models.Domain;
 using CodePulseAPI.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
-namespace CodePulseAPI.Repositories.Implementation
+namespace CodePulseAPI.Repositories.Implementation;
+
+public class CategoryRepository : ICategoryRepository   
 {
-    public class CategoryRepository : ICategoryRepository   
+    private readonly ApplicationDbContext dbContext;
+
+    public CategoryRepository(ApplicationDbContext dbContext)
     {
-        private readonly ApplicationDbContext dbContext;
+        this.dbContext = dbContext;
+    }
+    public async Task<Category> CreateAsync(Category category)
+    {
+        await dbContext.Categories.AddAsync(category);
+        await dbContext.SaveChangesAsync();
 
-        public CategoryRepository(ApplicationDbContext dbContext)
+        return category;
+    }       
+
+    public async Task<IEnumerable<Category>> GetAllAsync()
+    {
+        return await dbContext.Categories.ToListAsync();
+    }    
+
+    public async Task<Category?> GetById(Guid id)
+    {
+        return await dbContext.Categories.FirstOrDefaultAsync(x => x.Id.Equals(id));
+    }
+    public async Task<Category?> UpdateAsync(Category category)
+    {
+        var existingCategory = await dbContext.Categories.FirstOrDefaultAsync(x => x.Id.Equals(category.Id));
+
+        if (existingCategory != null)
         {
-            this.dbContext = dbContext;
-        }
-        public async Task<Category> CreateAsync(Category category)
-        {
-            await dbContext.Categories.AddAsync(category);
+            dbContext.Entry(existingCategory).CurrentValues.SetValues(category);
             await dbContext.SaveChangesAsync();
-
             return category;
-        }       
-
-        public async Task<IEnumerable<Category>> GetAllAsync()
-        {
-            return await dbContext.Categories.ToListAsync();
-        }    
-
-        public async Task<Category?> GetById(Guid id)
-        {
-            return await dbContext.Categories.FirstOrDefaultAsync(x => x.Id.Equals(id));
         }
-        public async Task<Category?> UpdateAsync(Category category)
+
+        return null;
+    }
+
+    public async Task<Category?> DeleteAsync(Guid id)
+    {
+        var existingCategory = await dbContext.Categories.FirstOrDefaultAsync(x => x.Id.Equals(id));
+
+        if (existingCategory is null)
         {
-            var existingCategory = await dbContext.Categories.FirstOrDefaultAsync(x => x.Id.Equals(category.Id));
-
-            if (existingCategory != null)
-            {
-                dbContext.Entry(existingCategory).CurrentValues.SetValues(category);
-                await dbContext.SaveChangesAsync();
-                return category;
-            }
-
             return null;
         }
 
-        public async Task<Category?> DeleteAsync(Guid id)
-        {
-            var existingCategory = await dbContext.Categories.FirstOrDefaultAsync(x => x.Id.Equals(id));
-
-            if (existingCategory is null)
-            {
-                return null;
-            }
-
-            dbContext.Categories.Remove(existingCategory);
-            await dbContext.SaveChangesAsync();
-            return existingCategory;
-        }
+        dbContext.Categories.Remove(existingCategory);
+        await dbContext.SaveChangesAsync();
+        return existingCategory;
     }
 }
