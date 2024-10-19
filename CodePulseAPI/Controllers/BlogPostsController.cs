@@ -10,10 +10,10 @@ namespace CodePulseAPI.Controllers;
 [ApiController]
 public class BlogPostsController : ControllerBase
 {
-    private readonly IBlogPostRepository blogPostRepository;
+    private readonly IBlogPostRepository _blogPostRepository;
     public BlogPostsController(IBlogPostRepository blogPostRepository)
     {
-        this.blogPostRepository = blogPostRepository;
+       _blogPostRepository = blogPostRepository;
     }
     // POST: {apibaseurl}/api/blogposts
     [HttpPost]
@@ -32,7 +32,7 @@ public class BlogPostsController : ControllerBase
             UrlHandle = request.UrlHandle
         };
 
-        blogPost = await blogPostRepository.CreateAsync(blogPost);
+        blogPost = await _blogPostRepository.CreateAsync(blogPost);
 
         //Domain model to Dto
         var response = new BlogPostDto
@@ -47,6 +47,32 @@ public class BlogPostsController : ControllerBase
             PublishedDate = blogPost.PublishedDate,
             UrlHandle = blogPost.UrlHandle
         };
+
+        return Ok(response);
+    }
+
+    // GET: {apibaseurl}/api/blogposts
+    [HttpGet]
+    public async Task<IActionResult> GetAllBlogPosts()
+    {
+       var blogPosts =  await _blogPostRepository.GetAllAsync();
+
+        var response = new List<BlogPostDto>();
+        foreach(var blogPost in blogPosts)
+        {
+            response.Add(new BlogPostDto
+            {
+                Id = blogPost.Id,
+                Author = blogPost.Author,
+                Title = blogPost.Title,
+                Content = blogPost.Content,
+                IsVisible = blogPost.IsVisible,
+                ShortDescription = blogPost.ShortDescription,
+                FeaturedImageUrl = blogPost.FeaturedImageUrl,
+                PublishedDate = blogPost.PublishedDate,
+                UrlHandle = blogPost.UrlHandle
+            });
+        }
 
         return Ok(response);
     }
