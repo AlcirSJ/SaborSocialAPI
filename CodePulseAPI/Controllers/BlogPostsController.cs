@@ -11,9 +11,11 @@ namespace CodePulseAPI.Controllers;
 public class BlogPostsController : ControllerBase
 {
     private readonly IBlogPostRepository _blogPostRepository;
-    public BlogPostsController(IBlogPostRepository blogPostRepository)
+    private readonly ICategoryRepository _categoryRepository;
+    public BlogPostsController(IBlogPostRepository blogPostRepository, ICategoryRepository categoryRepository)
     {
        _blogPostRepository = blogPostRepository;
+       _categoryRepository = categoryRepository;
     }
     // POST: {apibaseurl}/api/blogposts
     [HttpPost]
@@ -29,8 +31,19 @@ public class BlogPostsController : ControllerBase
             ShortDescription = request.ShortDescription,
             FeaturedImageUrl = request.FeaturedImageUrl,
             PublishedDate = request.PublishedDate,
-            UrlHandle = request.UrlHandle
+            UrlHandle = request.UrlHandle,
+            Categories = new List<Category>()
         };
+
+        foreach(var categoryGuid in request.Categories)
+        {
+            var existingCategory = await _categoryRepository.GetById(categoryGuid);
+
+            if (existingCategory is not null)
+            {
+                blogPost.Categories.Add(existingCategory);
+            }
+        }
 
         blogPost = await _blogPostRepository.CreateAsync(blogPost);
 
@@ -45,7 +58,13 @@ public class BlogPostsController : ControllerBase
             ShortDescription = blogPost.ShortDescription,
             FeaturedImageUrl = blogPost.FeaturedImageUrl,
             PublishedDate = blogPost.PublishedDate,
-            UrlHandle = blogPost.UrlHandle
+            UrlHandle = blogPost.UrlHandle,
+            Categories = blogPost.Categories.Select(x => new CategoryDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                UrlHandle = x.UrlHandle
+            }).ToList()
         };
 
         return Ok(response);
@@ -70,7 +89,13 @@ public class BlogPostsController : ControllerBase
                 ShortDescription = blogPost.ShortDescription,
                 FeaturedImageUrl = blogPost.FeaturedImageUrl,
                 PublishedDate = blogPost.PublishedDate,
-                UrlHandle = blogPost.UrlHandle
+                UrlHandle = blogPost.UrlHandle,
+                Categories = blogPost.Categories.Select(x => new CategoryDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    UrlHandle = x.UrlHandle
+                }).ToList()
             });
         }
 
