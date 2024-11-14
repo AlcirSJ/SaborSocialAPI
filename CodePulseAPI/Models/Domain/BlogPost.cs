@@ -11,4 +11,7 @@ public class BlogPost
     public DateTime PublishedDate { get; set; }
     public string Author { get; set; }
     public bool IsVisible { get; set; }
+
+    // EF Relation
+    public ICollection<Category> Categories{ get; set; }
 }
