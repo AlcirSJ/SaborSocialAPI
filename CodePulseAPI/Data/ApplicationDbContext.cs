@@ -9,7 +9,8 @@ namespace CodePulseAPI.Data
         {
         }
 
-        public DbSet<BlogPost> BlogPosts { get; set; }
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<Evento> Evento { get; set; }
+        public DbSet<User> User { get; set; }
+
     }
 }
