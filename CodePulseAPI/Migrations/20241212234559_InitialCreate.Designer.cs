@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CodePulseAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241211232301_InitialCreate")]
+    [Migration("20241212234559_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -42,9 +42,8 @@ namespace CodePulseAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Identification")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("Identification")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("Kg")
                         .HasColumnType("bigint");

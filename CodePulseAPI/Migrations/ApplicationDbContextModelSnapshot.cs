@@ -39,9 +39,8 @@ namespace CodePulseAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Identification")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("Identification")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("Kg")
                         .HasColumnType("bigint");

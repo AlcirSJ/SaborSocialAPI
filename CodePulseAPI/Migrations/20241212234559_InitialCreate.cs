@@ -22,7 +22,7 @@ namespace CodePulseAPI.Migrations
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Identification = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Identification = table.Column<long>(type: "bigint", nullable: false),
                     Ong = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ValidationCode = table.Column<long>(type: "bigint", nullable: false),
                     FoodType = table.Column<string>(type: "nvarchar(max)", nullable: false),

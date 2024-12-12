@@ -9,7 +9,7 @@ public class Evento
     public DateTime Date { get; set; }
     public string Location { get; set; }
     public string Description { get; set; }
-    public string Identification { get; set; }
+    public long Identification { get; set; }
     public string Ong { get; set; }
     public long ValidationCode { get; set; }
     public string FoodType { get; set; }
