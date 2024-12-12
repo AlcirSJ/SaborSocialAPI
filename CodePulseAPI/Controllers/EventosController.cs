@@ -73,6 +73,7 @@ public class EventosController : ControllerBase
         {
             response.Add(new EventoDto
             {
+                Id = evento.Id,
                 Name = evento.Name,
                 Person = evento.Person,
                 Organization = evento.Organization,
@@ -105,6 +106,7 @@ public class EventosController : ControllerBase
 
         var response = new EventoDto
         {
+            Id = evento.Id,
             Name = evento.Name,
             Person = evento.Person,
             Organization = evento.Organization,
