@@ -22,6 +22,8 @@ builder.Services.AddSwaggerGen();
 //    });
 //});
 
+
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("CodePulseConnetionString"));
@@ -43,6 +45,11 @@ app.UseHttpsRedirection();
 //app.UseCors("AllowFrontendOrigin");
 
 //app.UseAuthorization();
+
+app.UseCors(builder =>
+    builder.WithOrigins("http://localhost:3000")
+           .AllowAnyMethod()
+           .AllowAnyHeader());
 
 app.MapControllers();
 
