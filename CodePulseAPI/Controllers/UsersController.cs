@@ -1,8 +1,11 @@
-﻿using CodePulseAPI.Data;
+﻿using Azure;
+using CodePulseAPI.Data;
 using CodePulseAPI.Models.Domain;
 using CodePulseAPI.Models.DTO;
+using CodePulseAPI.Repositories.Implementation;
 using CodePulseAPI.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Text;
@@ -24,26 +27,75 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserRequestDto request)
     {
-        
-
-        byte[] bytes = Encoding.UTF8.GetBytes(request.Password);
-        HashAlgorithm sha = SHA256.Create();
-        byte[] result = sha.ComputeHash(bytes);
-        StringBuilder hashBuilder = new StringBuilder();
-        foreach (var b in result)
+        try
         {
-            hashBuilder.Append(b.ToString("x2"));
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            byte[] bytes = Encoding.UTF8.GetBytes(request.Password);
+            HashAlgorithm sha = SHA256.Create();
+            byte[] result = sha.ComputeHash(bytes);
+            StringBuilder hashBuilder = new StringBuilder();
+            foreach (var b in result)
+            {
+                hashBuilder.Append(b.ToString("x2"));
+            }
+
+            var user = new User()
+            {
+                NameOrEmail = request.NameOrEmail,
+                Password = hashBuilder.ToString()
+            };
+
+            
+
+            user = await _usersRepository.CreateAsync(user);
+
+            return Ok(request);
         }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao criar usuário: {ex.Message}");
+            return StatusCode(500, "Erro ao processar a solicitação.");
+        }
+    }
 
-        var user = new User()
-        { 
-            NameOrEmail = request.NameOrEmail,
-            Password = hashBuilder.ToString()
-        };
+    [HttpPut]
+    public async Task<IActionResult> UpdateUser(Guid id,[FromBody] CreateUserRequestDto request)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            byte[] bytes = Encoding.UTF8.GetBytes(request.Password);
+            HashAlgorithm sha = SHA256.Create();
+            byte[] result = sha.ComputeHash(bytes);
+            StringBuilder hashBuilder = new StringBuilder();
+            foreach (var b in result)
+            {
+                hashBuilder.Append(b.ToString("x2"));
+            }
 
-        user = await _usersRepository.CreateAsync(user);
+            var user = new User()
+            {
+                NameOrEmail = request.NameOrEmail,
+                Password = hashBuilder.ToString()
+            };
 
-        return Ok();
+
+
+            user = await _usersRepository.UpdateAsync(id,user);
+
+            return Ok(request);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao criar usuário: {ex.Message}");
+            return StatusCode(500, "Erro ao processar a solicitação.");
+        }
     }
 
     [HttpPost]
@@ -75,5 +127,22 @@ public class UsersController : ControllerBase
         {
             return Unauthorized("Senha Errada.");
         }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetUsers()
+    {
+        var users = await _usersRepository.GetAllAsync();
+
+        return Ok(users);
+    }
+
+    // Delete: {apibaseurl}/api/Eventos/{id}
+    [HttpDelete]
+    [Route("{id:Guid}")]
+    public async Task<IActionResult> DeleteUserById([FromRoute] Guid id)
+    {
+        var evento = await _usersRepository.DeleteByIdAsync(id);
+        return Ok(evento);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using CodePulseAPI.Data;
 using CodePulseAPI.Models.Domain;
+using CodePulseAPI.Models.DTO;
 using CodePulseAPI.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -47,5 +48,31 @@ public class EventosRepository : IEventosRepository
 
         
         return true;
+    }
+
+    public async Task<Evento> UpdateByIdAsync(Guid id, CreateEventoRequestDto evento)
+    {
+        var registro = await _dbContext.Evento.FirstOrDefaultAsync(x => x.Id.Equals(id));
+
+        if (registro == null)
+        {
+            return null;
+        }
+
+        registro.Name = evento.Name;
+        registro.Person = evento.Person;
+        registro.Date = evento.Date;
+        registro.Location = evento.Location;
+        registro.Description = evento.Description;
+        registro.Identification = evento.Identification;
+        registro.Ong = evento.Ong;
+        registro.ValidationCode = evento.ValidationCode;
+        registro.FoodType = evento.FoodType;
+        registro.Kg = evento.Kg;
+
+        _dbContext.Evento.Update(registro);
+        await _dbContext.SaveChangesAsync();
+
+        return registro;
     }
 }

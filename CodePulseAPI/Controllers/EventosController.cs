@@ -28,7 +28,6 @@ public class EventosController : ControllerBase
         {
             Name = request.Name,
             Person = request.Person,
-            Organization = request.Organization,
             Date = request.Date,
             Location = request.Location,
             Description = request.Description,
@@ -48,7 +47,6 @@ public class EventosController : ControllerBase
         {
             Name = evento.Name,
             Person = evento.Person,
-            Organization = evento.Organization,
             Date = evento.Date,
             Location = evento.Location,
             Description = evento.Description,
@@ -76,7 +74,6 @@ public class EventosController : ControllerBase
                 Id = evento.Id,
                 Name = evento.Name,
                 Person = evento.Person,
-                Organization = evento.Organization,
                 Date = evento.Date,
                 Location = evento.Location,
                 Description = evento.Description,
@@ -109,7 +106,36 @@ public class EventosController : ControllerBase
             Id = evento.Id,
             Name = evento.Name,
             Person = evento.Person,
-            Organization = evento.Organization,
+            Date = evento.Date,
+            Location = evento.Location,
+            Description = evento.Description,
+            Ong = evento.Ong,
+            ValidationCode = evento.ValidationCode,
+            FoodType = evento.FoodType,
+            Kg = evento.Kg
+        };
+
+        return Ok(response);
+    }
+
+    // put: {apibaseurl}/api/Eventos/{id}
+    [HttpPut]
+    [Route("{id:Guid}")]
+    public async Task<IActionResult> UpdateEventoById([FromRoute] Guid id, [FromBody] CreateEventoRequestDto request)
+    {
+
+        var evento = await _eventosRepository.UpdateByIdAsync(id, request);
+
+        if (evento is null)
+        {
+            return NotFound();
+        }
+
+        var response = new EventoDto
+        {
+            Id = evento.Id,
+            Name = evento.Name,
+            Person = evento.Person,
             Date = evento.Date,
             Location = evento.Location,
             Description = evento.Description,

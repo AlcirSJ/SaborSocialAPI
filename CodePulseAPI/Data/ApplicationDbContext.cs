@@ -11,6 +11,7 @@ namespace CodePulseAPI.Data
 
         public DbSet<Evento> Evento { get; set; }
         public DbSet<User> User { get; set; }
+        public DbSet<Organizacao> Organizacaos { get; set; }
 
     }
 }
