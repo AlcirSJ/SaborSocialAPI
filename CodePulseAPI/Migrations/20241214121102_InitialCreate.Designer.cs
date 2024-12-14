@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CodePulseAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241214011640_InitialCreate")]
+    [Migration("20241214121102_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -77,7 +77,7 @@ namespace CodePulseAPI.Migrations
 
             modelBuilder.Entity("CodePulseAPI.Models.Domain.Organizacao", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 

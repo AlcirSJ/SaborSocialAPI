@@ -74,7 +74,7 @@ namespace CodePulseAPI.Migrations
 
             modelBuilder.Entity("CodePulseAPI.Models.Domain.Organizacao", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
